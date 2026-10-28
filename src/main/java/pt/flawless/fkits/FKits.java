@@ -7,6 +7,12 @@ import pt.flawless.fapi.enums.EMessageTypeEnum;
 import pt.flawless.fapi.logs.FConsoleLogger;
 import pt.flawless.fapi.reload.Reloads;
 import pt.flawless.fkits.config.KitsStore;
+import pt.flawless.fkits.menu.CategoriesMenu;
+import pt.flawless.fkits.menu.CooldownMenu;
+import pt.flawless.fkits.menu.EditKitMenu;
+import pt.flawless.fkits.menu.IconPickMenu;
+import pt.flawless.fkits.menu.KitItemsMenu;
+import pt.flawless.fkits.menu.KitsMenu;
 import pt.flawless.fkits.service.KitService;
 import pt.flawless.fkits.storage.SqlCooldownRepository;
 
@@ -31,6 +37,12 @@ public class FKits extends JavaPlugin {
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
+        CategoriesMenu.register(this);
+        KitsMenu.register(this);
+        KitItemsMenu.register(this);
+        EditKitMenu.register(this);
+        IconPickMenu.register(this);
+        CooldownMenu.register(this);
         enabledOk = true;
         consoleLogger.sendEnablePluginMessage();
     }
