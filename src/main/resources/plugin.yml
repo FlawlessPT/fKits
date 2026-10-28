@@ -5,3 +5,43 @@ api-version: '1.21'
 description: Kits com categorias e delay
 depend: [fAPI, fDatabase]
 softdepend: [fPermissions]
+
+commands:
+  kit:
+    description: Abre o menu de kits ou recebe um kit
+    usage: /kit [kit] [jogador] | /kit tempo [kit] [jogador] | /kit reload | /kit help
+  criarkit:
+    description: Cria um kit
+    usage: /criarkit <id> <categoria> [delay]
+    aliases: [createkit]
+  editarkit:
+    description: Edita um kit
+    usage: /editarkit <kit>
+    aliases: [editkit]
+  delkit:
+    description: Apaga um kit
+    usage: /delkit <kit>
+    aliases: [deletekit]
+  verkit:
+    description: Vê os itens de um kit
+    usage: /verkit <kit>
+    aliases: [viewkit]
+  resetkitdelay:
+    description: Repõe o delay de um kit a um jogador
+    usage: /resetkitdelay <jogador> <kit>
+    aliases: [resetkitcooldown]
+  kitcategoria:
+    description: Gere as categorias de kits
+    usage: /kitcategoria <criar|editar|apagar|lista|help>
+    aliases: [kitcategory, kitcat]
+
+permissions:
+  fkits.admin:
+    description: Gere kits e categorias, dá kits a outros e vê o delay deles
+    default: false
+  fkits.bypass:
+    description: Recebe kits sem delay
+    default: false
+  fkits.kit.*:
+    description: Usa todos os kits
+    default: false

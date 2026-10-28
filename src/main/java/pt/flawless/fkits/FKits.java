@@ -1,6 +1,16 @@
 package pt.flawless.fkits;
 
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.PluginCommand;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.plugin.java.JavaPlugin;
+import pt.flawless.fkits.command.CreateKitCommand;
+import pt.flawless.fkits.command.DelKitCommand;
+import pt.flawless.fkits.command.EditKitCommand;
+import pt.flawless.fkits.command.KitCategoryCommand;
+import pt.flawless.fkits.command.KitCommand;
+import pt.flawless.fkits.command.ResetKitDelayCommand;
+import pt.flawless.fkits.command.ViewKitCommand;
 import pt.flawless.fapi.database.DatabaseService;
 import pt.flawless.fapi.database.Databases;
 import pt.flawless.fapi.enums.EMessageTypeEnum;
@@ -43,8 +53,21 @@ public class FKits extends JavaPlugin {
         EditKitMenu.register(this);
         IconPickMenu.register(this);
         CooldownMenu.register(this);
+        register("kit", new KitCommand(this));
+        register("criarkit", new CreateKitCommand(this));
+        register("editarkit", new EditKitCommand(this));
+        register("delkit", new DelKitCommand(this));
+        register("verkit", new ViewKitCommand(this));
+        register("resetkitdelay", new ResetKitDelayCommand(this));
+        register("kitcategoria", new KitCategoryCommand(this));
         enabledOk = true;
         consoleLogger.sendEnablePluginMessage();
+    }
+
+    private <T extends CommandExecutor & TabCompleter> void register(String name, T handler) {
+        PluginCommand command = getCommand(name);
+        command.setExecutor(handler);
+        command.setTabCompleter(handler);
     }
 
     public KitService service() {
