@@ -1,0 +1,14 @@
+# categorias: <id>: nome (com &) e icone (nome de material)
+# kits: <id>: categoria (id existente), delay (segundos, 0 = sem delay), icone (material ou item serializado), itens (lista de itens)
+# Os ids são minúsculas [a-z0-9_-], máx. 16 caracteres.
+categorias:
+  membros:
+    nome: "&aMembros"
+    icone: PLAYER_HEAD
+  ranks:
+    nome: "&6Ranks"
+    icone: GOLD_INGOT
+  vips:
+    nome: "&bVips"
+    icone: DIAMOND
+kits: {}

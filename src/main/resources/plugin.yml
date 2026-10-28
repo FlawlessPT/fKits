@@ -1,0 +1,7 @@
+name: fKits
+main: pt.flawless.fkits.FKits
+version: '1.0'
+api-version: '1.21'
+description: Kits com categorias e delay
+depend: [fAPI, fDatabase]
+softdepend: [fPermissions]
