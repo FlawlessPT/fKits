@@ -1,6 +1,7 @@
 package pt.flawless.fkits.menu;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class KitItemsMenu {
+    private static final int BACK_SLOT = 49;
     private static FKits plugin;
 
     private KitItemsMenu() {}
@@ -38,11 +40,18 @@ public final class KitItemsMenu {
 
     private static void open(Player player, Kit kit, boolean edit) {
         Holder holder = new Holder(kit, edit);
-        Inventory inv = new FInventory(holder, FInventorySize.SIZE_36, "Kit " + kit.getId()).getInventory();
+        Inventory inv = new FInventory(holder, edit ? FInventorySize.SIZE_36 : FInventorySize.SIZE_54, "Kit " + kit.getId()).getInventory();
         holder.inventory = inv;
         for (int i = 0; i < Math.min(kit.getItems().size(), 36); i++) {
             ItemStack it = kit.getItems().get(i);
             if (it != null) inv.setItem(i, it.clone());
+        }
+        if (!edit) {
+            // 5.ª linha de vidro a separar os itens, 6.ª só com o botão de voltar
+            ItemStack glass = MenuFrame.item(Material.GRAY_STAINED_GLASS_PANE, " ", List.of());
+            for (int i = 36; i < 45; i++) inv.setItem(i, glass);
+            inv.setItem(BACK_SLOT, MenuFrame.item(Material.ARROW, "§eVoltar",
+                    List.of("§7Volta ao menu de kits", "", "§7Clica para voltar")));
         }
         player.openInventory(inv);
     }
@@ -67,7 +76,11 @@ public final class KitItemsMenu {
         // modo edição: baú normal, os itens movem-se de verdade e a posição de cada slot fica guardada
         @EventHandler
         public void onClick(InventoryClickEvent e) {
-            if (e.getInventory().getHolder() instanceof Holder holder && !holder.edit) e.setCancelled(true);
+            if (!(e.getInventory().getHolder() instanceof Holder holder) || holder.edit) return;
+            e.setCancelled(true);
+            if (e.getRawSlot() == BACK_SLOT && e.getClickedInventory() == e.getInventory() && e.getWhoClicked() instanceof Player p) {
+                KitsMenu.open(p, holder.kit.getCategory());
+            }
         }
 
         @EventHandler
