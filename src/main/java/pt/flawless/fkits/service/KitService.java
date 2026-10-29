@@ -167,13 +167,13 @@ public class KitService {
         Inventory temp = Bukkit.createInventory(null, 36);
         temp.setContents(target.getInventory().getStorageContents());
         for (ItemStack item : kit.getItems()) {
-            if (!temp.addItem(item.clone()).isEmpty()) {
+            if (item != null && !temp.addItem(item.clone()).isEmpty()) {
                 claiming.remove(uuid);
                 result.complete(new ClaimResult(ClaimResult.Status.FULL, 0));
                 return;
             }
         }
-        for (ItemStack item : kit.getItems()) target.getInventory().addItem(item.clone());
+        for (ItemStack item : kit.getItems()) if (item != null) target.getInventory().addItem(item.clone());
         if (force) {
             claiming.remove(uuid);
             result.complete(new ClaimResult(ClaimResult.Status.OK, 0));

@@ -51,7 +51,7 @@ public final class EditKitMenu {
         inv.setItem(ICON_SLOT, MenuFrame.withLore(icon, named ? null : "§eItem no menu",
                 List.of("§7Item que representa o kit no menu", "", "§7Clica para escolher o item")));
         inv.setItem(ITEMS_SLOT, MenuFrame.item(Material.CHEST, "§eItens do kit",
-                List.of("§7Itens: §f" + kit.getItems().size(), "", "§7Clica para editar os itens")));
+                List.of("§7Itens: §f" + kit.getItems().stream().filter(java.util.Objects::nonNull).count(), "", "§7Clica para editar os itens")));
         inv.setItem(COOLDOWN_SLOT, MenuFrame.item(Material.CLOCK, "§eCooldown",
                 List.of("§7Atual: §f" + delayText(kit), "", "§7Clica e escreve o novo cooldown no chat")));
         inv.setItem(POSITION_SLOT, MenuFrame.item(Material.COMPASS, "§ePosição",

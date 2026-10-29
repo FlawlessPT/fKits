@@ -40,7 +40,10 @@ public final class KitItemsMenu {
         Holder holder = new Holder(kit, edit);
         Inventory inv = new FInventory(holder, FInventorySize.SIZE_36, "Kit " + kit.getId()).getInventory();
         holder.inventory = inv;
-        for (int i = 0; i < Math.min(kit.getItems().size(), 36); i++) inv.setItem(i, kit.getItems().get(i).clone());
+        for (int i = 0; i < Math.min(kit.getItems().size(), 36); i++) {
+            ItemStack it = kit.getItems().get(i);
+            if (it != null) inv.setItem(i, it.clone());
+        }
         player.openInventory(inv);
     }
 
@@ -61,37 +64,24 @@ public final class KitItemsMenu {
     }
 
     private static final class Handler implements Listener {
-        // edição por cópia: o jogador nunca perde nem ganha itens reais
+        // modo edição: baú normal, os itens movem-se de verdade e a posição de cada slot fica guardada
         @EventHandler
         public void onClick(InventoryClickEvent e) {
-            if (!(e.getInventory().getHolder() instanceof Holder holder)) return;
-            e.setCancelled(true);
-            if (!holder.edit) return;
-            Inventory menu = e.getInventory();
-            ItemStack clicked = e.getCurrentItem();
-            if (e.getClickedInventory() == menu) {
-                ItemStack cursor = e.getCursor();
-                if (!cursor.getType().isAir()) {
-                    menu.setItem(e.getSlot(), cursor.clone());
-                } else if (clicked != null) {
-                    menu.setItem(e.getSlot(), null);
-                }
-            } else if (e.getClickedInventory() != null && clicked != null && !clicked.getType().isAir()) {
-                int free = menu.firstEmpty();
-                if (free >= 0) menu.setItem(free, clicked.clone());
-            }
+            if (e.getInventory().getHolder() instanceof Holder holder && !holder.edit) e.setCancelled(true);
         }
 
         @EventHandler
         public void onDrag(InventoryDragEvent e) {
-            if (e.getInventory().getHolder() instanceof Holder) e.setCancelled(true);
+            if (e.getInventory().getHolder() instanceof Holder holder && !holder.edit) e.setCancelled(true);
         }
 
         @EventHandler
         public void onClose(InventoryCloseEvent e) {
             if (!(e.getInventory().getHolder() instanceof Holder holder) || !holder.edit) return;
+            // lista com nulos nos slots vazios, cortada no último item
             List<ItemStack> items = new ArrayList<>();
-            for (ItemStack it : e.getInventory().getContents()) if (it != null && !it.getType().isAir()) items.add(it);
+            for (ItemStack it : e.getInventory().getContents()) items.add(it == null || it.getType().isAir() ? null : it);
+            while (!items.isEmpty() && items.get(items.size() - 1) == null) items.remove(items.size() - 1);
             holder.kit.setItems(items);
             plugin.service().save();
         }

@@ -63,7 +63,7 @@ public class KitsStore {
                 Kit kit = new Kit(id, category, Math.max(0, s.getLong("delay", 0)), readIcon(s.get("icone")));
                 List<ItemStack> items = new ArrayList<>();
                 for (Object o : s.getList("itens", List.of())) {
-                    if (o instanceof ItemStack item) items.add(item);
+                    items.add(o instanceof ItemStack item ? item : null);
                 }
                 kit.setPosition(s.getInt("coluna", 0), s.getInt("linha", 0));
                 kit.setItems(items);
