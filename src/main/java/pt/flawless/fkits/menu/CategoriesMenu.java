@@ -33,16 +33,16 @@ public final class CategoriesMenu {
         Holder holder = new Holder();
         Inventory inv = new FInventory(holder, FInventorySize.SIZE_27, "Kits").getInventory();
         holder.inventory = inv;
-        // máx. 9 categorias, centradas na fila do meio
+        // máx. 9 categorias na fila do meio; 3 ficam espaçadas (colunas 2, 5 e 8), as restantes centradas
         List<KitCategory> cats = new ArrayList<>(plugin.service().categories());
         int n = Math.min(cats.size(), 9);
         int start = 9 + (9 - n) / 2;
         for (int i = 0; i < n; i++) {
             KitCategory c = cats.get(i);
-            int kits = plugin.service().kitsIn(c.getId()).size();
-            inv.setItem(start + i, MenuFrame.withLore(c.getIcon(), MenuFrame.color(c.getName()),
-                    List.of("§7Kits: §f" + kits, "", "§7Clica para abrir")));
-            holder.slots.put(start + i, c.getId());
+            int slot = n == 3 ? 10 + i * 3 : start + i;
+            String name = MenuFrame.color(c.getName());
+            inv.setItem(slot, MenuFrame.withLore(c.getIcon(), name, List.of("§7Clica para ver os kits " + name)));
+            holder.slots.put(slot, c.getId());
         }
         player.openInventory(inv);
     }
