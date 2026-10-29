@@ -13,7 +13,8 @@ import org.bukkit.inventory.ItemStack;
 import pt.flawless.fapi.enums.FInventorySize;
 import pt.flawless.fapi.inventory.FInventory;
 import pt.flawless.fkits.FKits;
-import pt.flawless.fkits.listeners.CooldownPrompt;
+import pt.flawless.fkits.listeners.ChatPrompt;
+import pt.flawless.fapi.sounds.FSound;
 import pt.flawless.fkits.model.Kit;
 import pt.flawless.fkits.model.KitCategory;
 import pt.flawless.fkits.service.KitService;
@@ -70,6 +71,26 @@ public final class EditKitMenu {
         return "sem posição";
     }
 
+    private static void askCooldown(Player p, Kit kit) {
+        ChatPrompt.start(p, new String[] {
+                "§eEscreve no chat o cooldown do kit §f" + kit.getId() + "§e (atual: §f" + delayText(kit) + "§e).",
+                "§7Exemplos: §f1d§7, §f12h§7, §f1d 12h 30m§7, §f90s§7, §f0 §7(sem delay)."},
+                (player, msg) -> {
+                    long seconds = KitService.parseDuration(msg);
+                    if (seconds < 0) {
+                        player.sendMessage("§cCooldown inválido. Usa por exemplo §f1d 12h 30m §c(d, h, m, s), ou §f0 §cpara não ter delay.");
+                        FSound.fail(player);
+                        return false;
+                    }
+                    kit.setDelaySeconds(seconds);
+                    plugin.service().save();
+                    player.sendMessage("§aCooldown do kit §f" + kit.getId() + " §adefinido para §f" + delayText(kit) + "§a.");
+                    FSound.success(player);
+                    open(player, kit);
+                    return true;
+                }, player -> open(player, kit));
+    }
+
     public static String delayText(Kit kit) {
         return kit.getDelaySeconds() > 0 ? KitService.formatDuration(kit.getDelaySeconds() * 1000) : "Sem delay";
     }
@@ -98,7 +119,7 @@ public final class EditKitMenu {
             switch (e.getRawSlot()) {
                 case ICON_SLOT -> IconPickMenu.open(p, kit);
                 case ITEMS_SLOT -> KitItemsMenu.openEdit(p, kit);
-                case COOLDOWN_SLOT -> CooldownPrompt.start(p, kit);
+                case COOLDOWN_SLOT -> askCooldown(p, kit);
                 case POSITION_SLOT -> PositionMenu.open(p, kit);
                 case CATEGORY_SLOT -> {
                     List<KitCategory> cats = new ArrayList<>(plugin.service().categories());

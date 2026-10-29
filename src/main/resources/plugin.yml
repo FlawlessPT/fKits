@@ -31,8 +31,8 @@ commands:
     usage: /resetkitdelay <jogador> <kit>
     aliases: [resetkitcooldown]
   kitcategoria:
-    description: Gere as categorias de kits
-    usage: /kitcategoria <criar|editar|apagar|lista|help>
+    description: Abre o menu de gestão das categorias de kits
+    usage: /kitcategoria
     aliases: [kitcategory, kitcat]
 
 permissions:
