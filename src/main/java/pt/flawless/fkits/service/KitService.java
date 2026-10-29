@@ -115,7 +115,7 @@ public class KitService {
     }
 
     public boolean canUse(Player player, Kit kit) {
-        return player.hasPermission("fkits.kit." + kit.getId());
+        return player.hasPermission("fkits.kit." + kit.getCategory() + "." + kit.getId());
     }
 
     public boolean hasBypass(Player player) {

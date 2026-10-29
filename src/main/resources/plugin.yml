@@ -43,5 +43,5 @@ permissions:
     description: Recebe kits sem delay
     default: false
   fkits.kit.*:
-    description: Usa todos os kits
+    description: Usa todos os kits (fkits.kit.<categoria>.* para uma categoria, fkits.kit.<categoria>.<kit> para um kit)
     default: false
