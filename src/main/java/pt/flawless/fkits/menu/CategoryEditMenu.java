@@ -3,6 +3,7 @@ package pt.flawless.fkits.menu;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -89,7 +90,7 @@ public final class CategoryEditMenu {
             FSound.fail(p);
             return;
         }
-        ConfirmMenu.open(p, "Apagar " + c.getId(), c.getIcon(),
+        ConfirmMenu.open(p, "Apagar " + c.getId(), new ItemStack(c.getIcon().getType()),
                 new ConfirmMenu.Button(Material.LIME_CONCRETE, "§aApagar",
                         List.of("§7Apaga a categoria " + c.getId(), "", "§7Clica para confirmar"), player -> {
                     if (plugin.service().category(c.getId()) == null || !plugin.service().kitsIn(c.getId()).isEmpty()) return;

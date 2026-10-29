@@ -78,8 +78,7 @@ public final class IconPickMenu {
             }
             ItemStack clicked = e.getCurrentItem();
             if (clicked == null || clicked.getType().isAir()) return;
-            ItemStack icon = clicked.clone();
-            icon.setAmount(1);
+            ItemStack icon = new ItemStack(clicked.getType());
             holder.onPick.accept(icon);
             holder.onBack.accept(p);
         }

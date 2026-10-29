@@ -48,8 +48,7 @@ public final class EditKitMenu {
 
     private static void fill(Inventory inv, Kit kit) {
         ItemStack icon = kit.getIcon();
-        boolean named = icon.hasItemMeta() && icon.getItemMeta().hasDisplayName();
-        inv.setItem(ICON_SLOT, MenuFrame.withLore(icon, named ? null : "§eItem no menu",
+        inv.setItem(ICON_SLOT, MenuFrame.withLore(icon, "§eItem no menu",
                 List.of("§7Item que representa o kit no menu", "", "§7Clica para escolher o item")));
         inv.setItem(ITEMS_SLOT, MenuFrame.item(Material.CHEST, "§eItens do kit",
                 List.of("§7Itens: §f" + kit.getItems().stream().filter(java.util.Objects::nonNull).count(), "", "§7Clica para editar os itens")));

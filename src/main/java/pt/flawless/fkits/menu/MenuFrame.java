@@ -20,12 +20,14 @@ final class MenuFrame {
         return new FItemStack(material, 1, name).setLore(lore).createItem();
     }
 
-    /** Clone de {@code base} com lore substituída e, se {@code name} não for nulo, novo nome. */
+    /** Item só com o material de {@code base}, a lore dada e, se {@code name} não for nulo, esse nome. */
     static ItemStack withLore(ItemStack base, String name, List<String> lore) {
-        ItemStack it = base.clone();
+        // só o material: nome, lore e encantamentos do item escolhido não passam para o menu
+        ItemStack it = new ItemStack(base.getType());
         ItemMeta meta = it.getItemMeta();
         if (meta != null) {
             if (name != null) meta.setDisplayName(name);
+            meta.addItemFlags(org.bukkit.inventory.ItemFlag.values());
             meta.setLore(lore);
             it.setItemMeta(meta);
         }
