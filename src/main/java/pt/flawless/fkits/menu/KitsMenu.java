@@ -1,7 +1,6 @@
 package pt.flawless.fkits.menu;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -23,8 +22,6 @@ import java.util.List;
 import java.util.Map;
 
 public final class KitsMenu {
-    private static final int BACK_SLOT = 49;
-    private static final int MAX_KITS = 28;
     private static FKits plugin;
 
     private KitsMenu() {}
@@ -49,17 +46,14 @@ public final class KitsMenu {
     private static void build(Player player, KitCategory category, Map<String, Long> claims) {
         KitService service = plugin.service();
         Holder holder = new Holder(category.getId());
-        Inventory inv = new FInventory(holder, FInventorySize.SIZE_54, MenuFrame.color(category.getName())).getInventory();
+        Inventory inv = new FInventory(holder, FInventorySize.SIZE_36, MenuFrame.color(category.getName())).getInventory();
         holder.inventory = inv;
-        MenuFrame.frame(inv);
-        inv.setItem(BACK_SLOT, MenuFrame.item(Material.ARROW, "§eVoltar",
-                List.of("§7Volta à lista de categorias", "", "§7Clica para voltar")));
 
-        List<Kit> kits = service.kitsIn(category.getId());
+        // sem botão de voltar: fecha-se com o Esc
         long now = System.currentTimeMillis();
-        for (int i = 0; i < Math.min(kits.size(), MAX_KITS); i++) {
-            Kit kit = kits.get(i);
-            int slot = (1 + i / 7) * 9 + 1 + i % 7;
+        for (Map.Entry<Integer, Kit> entry : service.layout(category.getId()).entrySet()) {
+            Kit kit = entry.getValue();
+            int slot = entry.getKey();
             List<String> lore = new ArrayList<>();
             lore.add("§7Delay: §f" + (kit.getDelaySeconds() > 0 ? KitService.formatDuration(kit.getDelaySeconds() * 1000) : "sem delay"));
             lore.add("§7Itens: §f" + kit.getItems().size());
@@ -102,10 +96,6 @@ public final class KitsMenu {
             e.setCancelled(true);
             if (e.getClickedInventory() != e.getInventory() || !(e.getWhoClicked() instanceof Player p)) return;
             int slot = e.getRawSlot();
-            if (slot == BACK_SLOT) {
-                CategoriesMenu.open(p);
-                return;
-            }
             String id = holder.slots.get(slot);
             Kit kit = id == null ? null : plugin.service().kit(id);
             if (kit == null) return;

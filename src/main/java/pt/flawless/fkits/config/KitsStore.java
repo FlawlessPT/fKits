@@ -65,6 +65,7 @@ public class KitsStore {
                 for (Object o : s.getList("itens", List.of())) {
                     if (o instanceof ItemStack item) items.add(item);
                 }
+                kit.setPosition(s.getInt("coluna", 0), s.getInt("linha", 0));
                 kit.setItems(items);
                 kits.put(id, kit);
             }
@@ -85,6 +86,8 @@ public class KitsStore {
             String p = "kits." + k.getId();
             yml.set(p + ".categoria", k.getCategory());
             yml.set(p + ".delay", k.getDelaySeconds());
+            yml.set(p + ".coluna", k.getColumn());
+            yml.set(p + ".linha", k.getRow());
             yml.set(p + ".icone", writeIcon(k.getIcon()));
             yml.set(p + ".itens", k.getItems());
         }

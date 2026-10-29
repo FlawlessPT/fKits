@@ -19,6 +19,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
@@ -69,6 +70,24 @@ public class KitService {
 
     public Kit kit(String id) { return kits.get(id); }
 
+    /** Slot (0-35) -> kit; os sem posição válida (ou repetida) ocupam os primeiros slots livres. */
+    public Map<Integer, Kit> layout(String categoryId) {
+        Map<Integer, Kit> slots = new TreeMap<>();
+        List<Kit> loose = new ArrayList<>();
+        for (Kit k : kitsIn(categoryId)) {
+            int c = k.getColumn(), r = k.getRow();
+            if (c >= 1 && c <= 9 && r >= 1 && r <= 4 && slots.putIfAbsent((r - 1) * 9 + c - 1, k) == null) continue;
+            loose.add(k);
+        }
+        int next = 0;
+        for (Kit k : loose) {
+            while (slots.containsKey(next)) next++;
+            if (next >= 36) break;
+            slots.put(next, k);
+        }
+        return slots;
+    }
+
     public KitCategory createCategory(String id, String name) {
         KitCategory c = new KitCategory(id, name, new ItemStack(Material.CHEST));
         categories.put(id, c);
@@ -81,8 +100,9 @@ public class KitService {
         save();
     }
 
-    public Kit createKit(String id, String categoryId, long delay) {
+    public Kit createKit(String id, String categoryId, long delay, int column, int row) {
         Kit k = new Kit(id, categoryId, delay, new ItemStack(Material.CHEST));
+        k.setPosition(column, row);
         kits.put(id, k);
         save();
         return k;

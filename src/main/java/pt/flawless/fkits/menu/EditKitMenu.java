@@ -21,10 +21,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class EditKitMenu {
-    private static final int ICON_SLOT = 10;
-    private static final int ITEMS_SLOT = 12;
-    private static final int COOLDOWN_SLOT = 14;
-    private static final int CATEGORY_SLOT = 16;
+    private static final int ICON_SLOT = 9;
+    private static final int ITEMS_SLOT = 11;
+    private static final int COOLDOWN_SLOT = 13;
+    private static final int CATEGORY_SLOT = 15;
+    private static final int POSITION_SLOT = 17;
     private static FKits plugin;
 
     private EditKitMenu() {}
@@ -52,11 +53,20 @@ public final class EditKitMenu {
                 List.of("§7Itens: §f" + kit.getItems().size(), "", "§7Clica para editar os itens")));
         inv.setItem(COOLDOWN_SLOT, MenuFrame.item(Material.CLOCK, "§eCooldown",
                 List.of("§7Atual: §f" + delayText(kit), "", "§7Clica para alterar o cooldown")));
+        inv.setItem(POSITION_SLOT, MenuFrame.item(Material.COMPASS, "§ePosição",
+                List.of("§7Atual: §f" + positionText(plugin.service(), kit), "", "§7Clica para escolher a posição no menu")));
         KitCategory cat = plugin.service().category(kit.getCategory());
         ItemStack catIcon = cat != null ? cat.getIcon() : new ItemStack(Material.BOOKSHELF);
         inv.setItem(CATEGORY_SLOT, MenuFrame.withLore(catIcon, "§eCategoria",
                 List.of("§7Atual: §f" + (cat != null ? MenuFrame.color(cat.getName()) : kit.getCategory()), "",
                         "§7Botão esquerdo: próxima categoria", "§7Botão direito: categoria anterior")));
+    }
+
+    static String positionText(KitService service, Kit kit) {
+        for (var e : service.layout(kit.getCategory()).entrySet()) {
+            if (e.getValue() == kit) return "coluna " + (e.getKey() % 9 + 1) + ", linha " + (e.getKey() / 9 + 1);
+        }
+        return "sem posição";
     }
 
     static String delayText(Kit kit) {
@@ -88,6 +98,7 @@ public final class EditKitMenu {
                 case ICON_SLOT -> IconPickMenu.open(p, kit);
                 case ITEMS_SLOT -> KitItemsMenu.openEdit(p, kit);
                 case COOLDOWN_SLOT -> CooldownMenu.open(p, kit);
+                case POSITION_SLOT -> PositionMenu.open(p, kit);
                 case CATEGORY_SLOT -> {
                     List<KitCategory> cats = new ArrayList<>(plugin.service().categories());
                     if (cats.isEmpty()) return;

@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class CreateKitCommand implements CommandExecutor, TabCompleter {
-    private static final int MAX_PER_CATEGORY = 28;
+    private static final int MAX_PER_CATEGORY = 36;
     private final FKits plugin;
 
     public CreateKitCommand(FKits plugin) {
@@ -21,8 +21,8 @@ public class CreateKitCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (!CommandUtil.requireAdmin(sender)) return true;
-        if (args.length < 2 || args.length > 3) {
-            sender.sendMessage("§cUso: /criarkit <id> <categoria> [delay]");
+        if (args.length < 2 || args.length > 5 || args.length == 4) {
+            sender.sendMessage("§cUso: /criarkit <id> <categoria> [delay] [coluna linha]");
             return true;
         }
         KitService service = plugin.service();
@@ -53,7 +53,20 @@ public class CreateKitCommand implements CommandExecutor, TabCompleter {
                 return true;
             }
         }
-        service.createKit(id, category, delay);
+        int column = 0, row = 0;
+        if (args.length == 5) {
+            column = parseInt(args[3]);
+            row = parseInt(args[4]);
+            if (column < 1 || column > 9 || row < 1 || row > 4) {
+                sender.sendMessage("§cA coluna vai de 1 a 9 e a linha de 1 a 4.");
+                return true;
+            }
+            if (service.layout(category).containsKey((row - 1) * 9 + column - 1)) {
+                sender.sendMessage("§cEssa posição já está ocupada.");
+                return true;
+            }
+        }
+        service.createKit(id, category, delay, column, row);
         sender.sendMessage("§aKit " + id + " criado. Usa /editarkit " + id + " para o configurar.");
         return true;
     }
@@ -62,5 +75,13 @@ public class CreateKitCommand implements CommandExecutor, TabCompleter {
     public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
         if (!sender.hasPermission(CommandUtil.ADMIN)) return List.of();
         return args.length == 2 ? CommandUtil.categoryIds(plugin, args[1]) : List.of();
+    }
+
+    private static int parseInt(String s) {
+        try {
+            return Integer.parseInt(s);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
     }
 }

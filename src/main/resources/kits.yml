@@ -1,5 +1,5 @@
 # categorias: <id>: nome (com &) e icone (nome de material)
-# kits: <id>: categoria (id existente), delay (segundos, 0 = sem delay), icone (material ou item serializado), itens (lista de itens)
+# kits: <id>: categoria (id existente), delay (segundos, 0 = sem delay), coluna (1-9) e linha (1-4) no menu (0 = primeiro slot livre), icone (material ou item serializado), itens (lista de itens)
 # Os ids são minúsculas [a-z0-9_-], máx. 16 caracteres.
 categorias:
   membros:

@@ -23,6 +23,7 @@ import pt.flawless.fkits.menu.EditKitMenu;
 import pt.flawless.fkits.menu.IconPickMenu;
 import pt.flawless.fkits.menu.KitItemsMenu;
 import pt.flawless.fkits.menu.KitsMenu;
+import pt.flawless.fkits.menu.PositionMenu;
 import pt.flawless.fkits.service.KitService;
 import pt.flawless.fkits.storage.SqlCooldownRepository;
 
@@ -53,6 +54,7 @@ public class FKits extends JavaPlugin {
         EditKitMenu.register(this);
         IconPickMenu.register(this);
         CooldownMenu.register(this);
+        PositionMenu.register(this);
         register("kit", new KitCommand(this));
         register("criarkit", new CreateKitCommand(this));
         register("editarkit", new EditKitCommand(this));

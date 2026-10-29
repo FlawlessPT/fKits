@@ -12,7 +12,7 @@ commands:
     usage: /kit [kit] [jogador] | /kit tempo [kit] [jogador] | /kit reload | /kit help
   criarkit:
     description: Cria um kit
-    usage: /criarkit <id> <categoria> [delay]
+    usage: /criarkit <id> <categoria> [delay] [coluna linha]
     aliases: [createkit]
   editarkit:
     description: Edita um kit
