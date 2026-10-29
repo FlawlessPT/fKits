@@ -187,6 +187,25 @@ public class KitService {
                 }));
     }
 
+    /** "1d 12h 30m 15s" (qualquer subconjunto) ou só segundos ("90"); -1 se inválido. */
+    public static long parseDuration(String text) {
+        String t = text.replaceAll("\\s+", "").toLowerCase();
+        if (t.matches("\\d{1,9}")) return Long.parseLong(t);
+        if (!t.matches("(\\d{1,6}[dhms])+")) return -1;
+        long total = 0;
+        java.util.regex.Matcher m = java.util.regex.Pattern.compile("(\\d+)([dhms])").matcher(t);
+        while (m.find()) {
+            long n = Long.parseLong(m.group(1));
+            total += n * switch (m.group(2).charAt(0)) {
+                case 'd' -> 86400L;
+                case 'h' -> 3600L;
+                case 'm' -> 60L;
+                default -> 1L;
+            };
+        }
+        return total;
+    }
+
     public static String formatDuration(long millis) {
         long s = Math.max(0, millis / 1000);
         long d = s / 86400, h = s % 86400 / 3600, m = s % 3600 / 60, sec = s % 60;

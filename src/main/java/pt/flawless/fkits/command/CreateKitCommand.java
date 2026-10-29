@@ -43,13 +43,9 @@ public class CreateKitCommand implements CommandExecutor, TabCompleter {
         }
         long delay = 0;
         if (args.length == 3) {
-            try {
-                delay = Long.parseLong(args[2]);
-            } catch (NumberFormatException e) {
-                delay = -1;
-            }
+            delay = KitService.parseDuration(args[2]);
             if (delay < 0) {
-                sender.sendMessage("§cO delay tem de ser um número de segundos (0 ou mais).");
+                sender.sendMessage("§cO delay é inválido. Usa segundos ou por exemplo 1d, 12h30m (d, h, m, s), sem espaços.");
                 return true;
             }
         }
