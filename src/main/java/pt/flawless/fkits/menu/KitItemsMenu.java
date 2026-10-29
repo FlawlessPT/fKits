@@ -30,16 +30,22 @@ public final class KitItemsMenu {
         Bukkit.getPluginManager().registerEvents(new Handler(), p);
     }
 
+    /** Preview aberto fora do menu de kits (ex.: /verkit): o botão de voltar fecha. */
     public static void openView(Player player, Kit kit) {
-        open(player, kit, false);
+        open(player, kit, false, false);
     }
 
     public static void openEdit(Player player, Kit kit) {
-        open(player, kit, true);
+        open(player, kit, true, false);
     }
 
-    private static void open(Player player, Kit kit, boolean edit) {
-        Holder holder = new Holder(kit, edit);
+    /** Preview aberto a partir do menu de kits: o botão de voltar regressa a ele. */
+    public static void openViewFromKits(Player player, Kit kit) {
+        open(player, kit, false, true);
+    }
+
+    private static void open(Player player, Kit kit, boolean edit, boolean fromKits) {
+        Holder holder = new Holder(kit, edit, fromKits);
         Inventory inv = new FInventory(holder, edit ? FInventorySize.SIZE_36 : FInventorySize.SIZE_54, "Kit " + kit.getId()).getInventory();
         holder.inventory = inv;
         for (int i = 0; i < Math.min(kit.getItems().size(), 36); i++) {
@@ -51,7 +57,7 @@ public final class KitItemsMenu {
             ItemStack glass = MenuFrame.item(Material.GRAY_STAINED_GLASS_PANE, " ", List.of());
             for (int i = 36; i < 45; i++) inv.setItem(i, glass);
             inv.setItem(BACK_SLOT, MenuFrame.item(Material.ARROW, "§eVoltar",
-                    List.of("§7Volta ao menu de kits", "", "§7Clica para voltar")));
+                    List.of(fromKits ? "§7Volta ao menu de kits" : "§7Fecha o menu", "", fromKits ? "§7Clica para voltar" : "§7Clica para fechar")));
         }
         player.openInventory(inv);
     }
@@ -59,11 +65,13 @@ public final class KitItemsMenu {
     private static final class Holder implements InventoryHolder {
         final Kit kit;
         final boolean edit;
+        final boolean fromKits;
         Inventory inventory;
 
-        Holder(Kit kit, boolean edit) {
+        Holder(Kit kit, boolean edit, boolean fromKits) {
             this.kit = kit;
             this.edit = edit;
+            this.fromKits = fromKits;
         }
 
         @Override
@@ -79,7 +87,8 @@ public final class KitItemsMenu {
             if (!(e.getInventory().getHolder() instanceof Holder holder) || holder.edit) return;
             e.setCancelled(true);
             if (e.getRawSlot() == BACK_SLOT && e.getClickedInventory() == e.getInventory() && e.getWhoClicked() instanceof Player p) {
-                KitsMenu.open(p, holder.kit.getCategory());
+                if (holder.fromKits) KitsMenu.open(p, holder.kit.getCategory());
+                else p.closeInventory();
             }
         }
 

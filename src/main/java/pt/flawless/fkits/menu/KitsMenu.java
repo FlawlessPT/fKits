@@ -112,7 +112,7 @@ public final class KitsMenu {
             Kit kit = id == null ? null : plugin.service().kit(id);
             if (kit == null) return;
             if (e.isRightClick()) {
-                KitItemsMenu.openView(p, kit);
+                KitItemsMenu.openViewFromKits(p, kit);
             } else if (e.isLeftClick()) {
                 claim(p, kit, holder.category);
             }
