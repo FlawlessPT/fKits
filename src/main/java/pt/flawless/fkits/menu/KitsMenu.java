@@ -59,7 +59,6 @@ public final class KitsMenu {
             int slot = entry.getKey();
             List<String> lore = new ArrayList<>();
             lore.add("§7Delay: §f" + (kit.getDelaySeconds() > 0 ? KitService.formatDuration(kit.getDelaySeconds() * 1000) : "sem delay"));
-            lore.add("§7Itens: §f" + kit.getItems().stream().filter(java.util.Objects::nonNull).count());
             lore.add("");
             if (!service.canUse(player, kit)) {
                 lore.add("§cSem permissão");
