@@ -20,5 +20,5 @@ public class KitCategory {
     public ItemStack getIcon() { return icon; }
     public void setIcon(ItemStack icon) { this.icon = icon; }
     public int getRows() { return rows; }
-    public void setRows(int rows) { this.rows = Math.max(1, Math.min(6, rows)); }
+    public void setRows(int rows) { this.rows = Math.max(1, Math.min(5, rows)); }
 }

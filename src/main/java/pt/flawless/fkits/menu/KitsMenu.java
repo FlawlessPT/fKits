@@ -1,6 +1,7 @@
 package pt.flawless.fkits.menu;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -46,10 +47,12 @@ public final class KitsMenu {
     private static void build(Player player, KitCategory category, Map<String, Long> claims) {
         KitService service = plugin.service();
         Holder holder = new Holder(category.getId());
-        Inventory inv = new FInventory(holder, FInventorySize.values()[category.getRows() - 1], MenuFrame.color(category.getName())).getInventory();
+        Inventory inv = new FInventory(holder, FInventorySize.values()[category.getRows()], MenuFrame.color(category.getName())).getInventory();
         holder.inventory = inv;
 
-        // sem botão de voltar: fecha-se com o Esc
+        // linha extra no fim só com o botão de voltar
+        inv.setItem(backSlot(category), MenuFrame.item(Material.ARROW, "§eVoltar",
+                List.of("§7Volta às categorias de kits", "", "§7Clica para voltar")));
         long now = System.currentTimeMillis();
         for (Map.Entry<Integer, Kit> entry : service.layout(category.getId()).entrySet()) {
             Kit kit = entry.getValue();
@@ -74,6 +77,10 @@ public final class KitsMenu {
         player.openInventory(inv);
     }
 
+    private static int backSlot(KitCategory category) {
+        return category.getRows() * 9 + 4;
+    }
+
     private static final class Holder implements InventoryHolder {
         final String category;
         final Map<Integer, String> slots = new HashMap<>();
@@ -96,6 +103,11 @@ public final class KitsMenu {
             e.setCancelled(true);
             if (e.getClickedInventory() != e.getInventory() || !(e.getWhoClicked() instanceof Player p)) return;
             int slot = e.getRawSlot();
+            KitCategory current = plugin.service().category(holder.category);
+            if (current != null && slot == backSlot(current)) {
+                CategoriesMenu.open(p);
+                return;
+            }
             String id = holder.slots.get(slot);
             Kit kit = id == null ? null : plugin.service().kit(id);
             if (kit == null) return;

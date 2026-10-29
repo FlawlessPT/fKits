@@ -72,7 +72,7 @@ public final class CategoryEditMenu {
 
     private static void changeRows(Player p, KitCategory c, Inventory inv, boolean less) {
         int rows = c.getRows() + (less ? -1 : 1);
-        if (rows < 1 || rows > 6) return;
+        if (rows < 1 || rows > 5) return;
         if (plugin.service().kitsIn(c.getId()).size() > rows * 9) {
             p.sendMessage("§cA categoria tem mais kits do que cabem em " + rows + " linhas.");
             FSound.fail(p);
