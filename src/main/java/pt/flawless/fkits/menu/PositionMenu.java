@@ -35,7 +35,7 @@ public final class PositionMenu {
         for (Map.Entry<Integer, Kit> e : plugin.service().layout(kit.getCategory()).entrySet()) {
             Kit other = e.getValue();
             boolean self = other == kit;
-            inv.setItem(e.getKey(), MenuFrame.withLore(other.getIcon(), "§e" + other.getId(),
+            inv.setItem(e.getKey(), MenuFrame.withLore(other.getIcon(), MenuFrame.kitName(other),
                     List.of(self ? "§aPosição atual deste kit" : "§cPosição ocupada")));
         }
         player.openInventory(inv);

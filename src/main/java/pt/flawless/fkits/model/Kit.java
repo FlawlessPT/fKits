@@ -12,6 +12,8 @@ public class Kit {
     /** Posição no menu, 1-based; 0 = sem posição (ocupa o primeiro slot livre). */
     private int column;
     private int row;
+    /** Nome no menu, com &; nulo = o id. */
+    private String name;
     private ItemStack icon;
     private List<ItemStack> items = new ArrayList<>();
 
@@ -30,6 +32,8 @@ public class Kit {
     public int getColumn() { return column; }
     public int getRow() { return row; }
     public void setPosition(int column, int row) { this.column = column; this.row = row; }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
     public ItemStack getIcon() { return icon; }
     public void setIcon(ItemStack icon) { this.icon = icon; }
     public List<ItemStack> getItems() { return items; }

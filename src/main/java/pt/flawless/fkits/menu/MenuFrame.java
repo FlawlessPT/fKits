@@ -16,6 +16,11 @@ final class MenuFrame {
         return s.replace('&', '§');
     }
 
+    /** Nome do kit no menu: o definido (com &) ou o id. */
+    static String kitName(pt.flawless.fkits.model.Kit kit) {
+        return kit.getName() != null ? color(kit.getName()) : "§e" + kit.getId();
+    }
+
     static ItemStack item(Material material, String name, List<String> lore) {
         return new FItemStack(material, 1, name).setLore(lore).createItem();
     }

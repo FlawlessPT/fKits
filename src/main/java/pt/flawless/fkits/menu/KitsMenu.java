@@ -69,7 +69,7 @@ public final class KitsMenu {
             }
             lore.add("§7Botão direito: ver itens");
             ItemStack base = kit.getIcon();
-            inv.setItem(slot, MenuFrame.withLore(base, "§e" + kit.getId(), lore));
+            inv.setItem(slot, MenuFrame.withLore(base, MenuFrame.kitName(kit), lore));
             holder.slots.put(slot, kit.getId());
         }
         player.openInventory(inv);

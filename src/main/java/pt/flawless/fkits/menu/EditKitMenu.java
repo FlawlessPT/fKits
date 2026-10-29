@@ -28,6 +28,7 @@ public final class EditKitMenu {
     private static final int COOLDOWN_SLOT = 13;
     private static final int CATEGORY_SLOT = 15;
     private static final int POSITION_SLOT = 17;
+    private static final int NAME_SLOT = 22;
     private static FKits plugin;
 
     private EditKitMenu() {}
@@ -54,6 +55,8 @@ public final class EditKitMenu {
                 List.of("§7Itens: §f" + kit.getItems().stream().filter(java.util.Objects::nonNull).count(), "", "§7Clica para editar os itens")));
         inv.setItem(COOLDOWN_SLOT, MenuFrame.item(Material.CLOCK, "§eCooldown",
                 List.of("§7Atual: §f" + delayText(kit), "", "§7Clica e escreve o novo cooldown no chat")));
+        inv.setItem(NAME_SLOT, MenuFrame.item(Material.NAME_TAG, "§eNome",
+                List.of("§7Atual: §f" + (kit.getName() != null ? MenuFrame.color(kit.getName()) : kit.getId() + " §7(o id)"), "", "§7Clica e escreve o novo nome no chat (aceita &)")));
         inv.setItem(POSITION_SLOT, MenuFrame.item(Material.COMPASS, "§ePosição",
                 List.of("§7Atual: §f" + positionText(plugin.service(), kit), "", "§7Clica para escolher a posição no menu")));
         KitCategory cat = plugin.service().category(kit.getCategory());
@@ -90,6 +93,20 @@ public final class EditKitMenu {
                 }, player -> open(player, kit));
     }
 
+    private static void askName(Player p, Kit kit) {
+        ChatPrompt.start(p, new String[] {
+                "§eEscreve no chat o novo nome do kit §f" + kit.getId() + "§e (aceita cores com &).",
+                "§7Escreve §fpadrao §7para voltar a mostrar o id."},
+                (player, msg) -> {
+                    kit.setName(msg.equalsIgnoreCase("padrao") ? null : msg);
+                    plugin.service().save();
+                    player.sendMessage("§aNome do kit §f" + kit.getId() + " §aatualizado.");
+                    FSound.success(player);
+                    open(player, kit);
+                    return true;
+                }, player -> open(player, kit));
+    }
+
     public static String delayText(Kit kit) {
         return kit.getDelaySeconds() > 0 ? KitService.formatDuration(kit.getDelaySeconds() * 1000) : "Sem delay";
     }
@@ -119,6 +136,7 @@ public final class EditKitMenu {
                 case ICON_SLOT -> IconPickMenu.open(p, kit);
                 case ITEMS_SLOT -> KitItemsMenu.openEdit(p, kit);
                 case COOLDOWN_SLOT -> askCooldown(p, kit);
+                case NAME_SLOT -> askName(p, kit);
                 case POSITION_SLOT -> PositionMenu.open(p, kit);
                 case CATEGORY_SLOT -> {
                     List<KitCategory> cats = new ArrayList<>(plugin.service().categories());
