@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Locale;
 
 public class CreateKitCommand implements CommandExecutor, TabCompleter {
-    private static final int MAX_PER_CATEGORY = 36;
     private final FKits plugin;
 
     public CreateKitCommand(FKits plugin) {
@@ -37,8 +36,9 @@ public class CreateKitCommand implements CommandExecutor, TabCompleter {
             sender.sendMessage("§cA categoria " + args[1] + " não existe.");
             return true;
         }
-        if (service.kitsIn(category).size() >= MAX_PER_CATEGORY) {
-            sender.sendMessage("§cA categoria já tem o máximo de " + MAX_PER_CATEGORY + " kits.");
+        int rows = service.category(category).getRows();
+        if (service.kitsIn(category).size() >= rows * 9) {
+            sender.sendMessage("§cA categoria já tem o máximo de " + rows * 9 + " kits.");
             return true;
         }
         long delay = 0;
@@ -53,8 +53,8 @@ public class CreateKitCommand implements CommandExecutor, TabCompleter {
         if (args.length == 5) {
             column = parseInt(args[3]);
             row = parseInt(args[4]);
-            if (column < 1 || column > 9 || row < 1 || row > 4) {
-                sender.sendMessage("§cA coluna vai de 1 a 9 e a linha de 1 a 4.");
+            if (column < 1 || column > 9 || row < 1 || row > rows) {
+                sender.sendMessage("§cA coluna vai de 1 a 9 e a linha de 1 a " + rows + " (linhas desta categoria).");
                 return true;
             }
             if (service.layout(category).containsKey((row - 1) * 9 + column - 1)) {

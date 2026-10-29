@@ -6,6 +6,7 @@ public class KitCategory {
     private final String id;
     private String name;
     private ItemStack icon;
+    private int rows = 4;
 
     public KitCategory(String id, String name, ItemStack icon) {
         this.id = id;
@@ -18,4 +19,6 @@ public class KitCategory {
     public void setName(String name) { this.name = name; }
     public ItemStack getIcon() { return icon; }
     public void setIcon(ItemStack icon) { this.icon = icon; }
+    public int getRows() { return rows; }
+    public void setRows(int rows) { this.rows = Math.max(1, Math.min(6, rows)); }
 }

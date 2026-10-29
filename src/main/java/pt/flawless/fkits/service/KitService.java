@@ -70,19 +70,20 @@ public class KitService {
 
     public Kit kit(String id) { return kits.get(id); }
 
-    /** Slot (0-35) -> kit; os sem posição válida (ou repetida) ocupam os primeiros slots livres. */
+    /** Slot (0 até linhas×9-1) -> kit; os sem posição válida (ou repetida) ocupam os primeiros slots livres. */
     public Map<Integer, Kit> layout(String categoryId) {
         Map<Integer, Kit> slots = new TreeMap<>();
+        int rows = category(categoryId).getRows();
         List<Kit> loose = new ArrayList<>();
         for (Kit k : kitsIn(categoryId)) {
             int c = k.getColumn(), r = k.getRow();
-            if (c >= 1 && c <= 9 && r >= 1 && r <= 4 && slots.putIfAbsent((r - 1) * 9 + c - 1, k) == null) continue;
+            if (c >= 1 && c <= 9 && r >= 1 && r <= rows && slots.putIfAbsent((r - 1) * 9 + c - 1, k) == null) continue;
             loose.add(k);
         }
         int next = 0;
         for (Kit k : loose) {
             while (slots.containsKey(next)) next++;
-            if (next >= 36) break;
+            if (next >= rows * 9) break;
             slots.put(next, k);
         }
         return slots;

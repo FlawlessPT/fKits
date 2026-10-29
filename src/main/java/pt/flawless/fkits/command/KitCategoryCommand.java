@@ -47,6 +47,7 @@ public class KitCategoryCommand implements CommandExecutor, TabCompleter {
         s.sendMessage("§e/kitcategoria criar <id> [nome...] §7- Cria uma categoria");
         s.sendMessage("§e/kitcategoria editar <id> nome <texto...> §7- Muda o nome da categoria");
         s.sendMessage("§e/kitcategoria editar <id> icone §7- Usa o item na mão como ícone");
+        s.sendMessage("§e/kitcategoria editar <id> linhas <1-6> §7- Muda as linhas do menu de kits");
         s.sendMessage("§e/kitcategoria apagar <id> §7- Apaga uma categoria sem kits");
         s.sendMessage("§e/kitcategoria lista §7- Lista as categorias");
         s.sendMessage("§e/kitcategoria help §7- Mostra esta lista");
@@ -75,7 +76,7 @@ public class KitCategoryCommand implements CommandExecutor, TabCompleter {
 
     private void edit(CommandSender s, String[] args) {
         if (args.length < 3) {
-            s.sendMessage("§cUso: /kitcategoria editar <id> <nome|icone> ...");
+            s.sendMessage("§cUso: /kitcategoria editar <id> <nome|icone|linhas> ...");
             return;
         }
         KitCategory c = plugin.service().category(args[1].toLowerCase(Locale.ROOT));
@@ -93,6 +94,29 @@ public class KitCategoryCommand implements CommandExecutor, TabCompleter {
                 c.setName(String.join(" ", Arrays.copyOfRange(args, 3, args.length)));
                 plugin.service().save();
                 s.sendMessage("§aNome da categoria " + c.getId() + " atualizado.");
+            }
+            case "linhas", "rows" -> {
+                if (args.length != 4) {
+                    s.sendMessage("§cUso: /kitcategoria editar <id> linhas <1-6>");
+                    return;
+                }
+                int rows;
+                try {
+                    rows = Integer.parseInt(args[3]);
+                } catch (NumberFormatException ex) {
+                    rows = 0;
+                }
+                if (rows < 1 || rows > 6) {
+                    s.sendMessage("§cAs linhas vão de 1 a 6.");
+                    return;
+                }
+                if (plugin.service().kitsIn(c.getId()).size() > rows * 9) {
+                    s.sendMessage("§cA categoria tem mais kits do que cabem em " + rows + " linhas.");
+                    return;
+                }
+                c.setRows(rows);
+                plugin.service().save();
+                s.sendMessage("§aA categoria " + c.getId() + " passou a ter " + rows + " linhas.");
             }
             case "icone", "icon" -> {
                 if (args.length != 3) {
@@ -112,7 +136,7 @@ public class KitCategoryCommand implements CommandExecutor, TabCompleter {
                 plugin.service().save();
                 p.sendMessage("§aÍcone da categoria " + c.getId() + " atualizado.");
             }
-            default -> s.sendMessage("§cUso: /kitcategoria editar <id> <nome|icone> ...");
+            default -> s.sendMessage("§cUso: /kitcategoria editar <id> <nome|icone|linhas> ...");
         }
     }
 
@@ -162,7 +186,7 @@ public class KitCategoryCommand implements CommandExecutor, TabCompleter {
         String sub = args[0].toLowerCase(Locale.ROOT);
         boolean edit = sub.equals("editar") || sub.equals("edit");
         if (args.length == 2 && (edit || sub.equals("apagar") || sub.equals("delete"))) return CommandUtil.categoryIds(plugin, args[1]);
-        if (args.length == 3 && edit) return CommandUtil.filter(List.of("nome", "icone"), args[2]);
+        if (args.length == 3 && edit) return CommandUtil.filter(List.of("nome", "icone", "linhas"), args[2]);
         return List.of();
     }
 }

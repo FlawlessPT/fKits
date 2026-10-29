@@ -46,7 +46,7 @@ public final class KitsMenu {
     private static void build(Player player, KitCategory category, Map<String, Long> claims) {
         KitService service = plugin.service();
         Holder holder = new Holder(category.getId());
-        Inventory inv = new FInventory(holder, FInventorySize.SIZE_36, MenuFrame.color(category.getName())).getInventory();
+        Inventory inv = new FInventory(holder, FInventorySize.values()[category.getRows() - 1], MenuFrame.color(category.getName())).getInventory();
         holder.inventory = inv;
 
         // sem botão de voltar: fecha-se com o Esc

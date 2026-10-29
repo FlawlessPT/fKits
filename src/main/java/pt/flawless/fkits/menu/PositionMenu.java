@@ -30,7 +30,7 @@ public final class PositionMenu {
     /** Thread principal. */
     public static void open(Player player, Kit kit) {
         Holder holder = new Holder(kit);
-        Inventory inv = new FInventory(holder, FInventorySize.SIZE_36, "Posição " + kit.getId()).getInventory();
+        Inventory inv = new FInventory(holder, FInventorySize.values()[plugin.service().category(kit.getCategory()).getRows() - 1], "Posição " + kit.getId()).getInventory();
         holder.inventory = inv;
         for (Map.Entry<Integer, Kit> e : plugin.service().layout(kit.getCategory()).entrySet()) {
             Kit other = e.getValue();

@@ -44,7 +44,9 @@ public class KitsStore {
                     warn("categoria ignorada (id inválido): " + id);
                     continue;
                 }
-                categories.put(id, new KitCategory(id, s.getString("nome", id), readIcon(s.get("icone"))));
+                KitCategory cat = new KitCategory(id, s.getString("nome", id), readIcon(s.get("icone")));
+                cat.setRows(s.getInt("linhas", 4));
+                categories.put(id, cat);
             }
         }
         ConfigurationSection ks = yml.getConfigurationSection("kits");
@@ -81,6 +83,7 @@ public class KitsStore {
             String p = "categorias." + c.getId();
             yml.set(p + ".nome", c.getName());
             yml.set(p + ".icone", writeIcon(c.getIcon()));
+            yml.set(p + ".linhas", c.getRows());
         }
         for (Kit k : kits.values()) {
             String p = "kits." + k.getId();
